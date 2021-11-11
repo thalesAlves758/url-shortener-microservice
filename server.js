@@ -48,6 +48,20 @@ app.post('/api/shorturl', (req, res) => {
   }
 });
 
+app.get('/api/shorturl/:short_url', (req, res) => {
+
+  const { short_url } = req.params;
+
+  if(short_url) {
+
+    const foundUrlObj = shortenedUrls.find(item => item.short_url === parseInt(short_url));
+
+    if(foundUrlObj) return res.redirect(foundUrlObj.original_url);
+
+    res.status(404).json({ message: "No resource was found." });
+  }
+});
+
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
 });
