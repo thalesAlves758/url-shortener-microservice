@@ -6,6 +6,8 @@ const app = express();
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+
+// control variables
 let currentIdCount = 0;
 const shortenedUrls = [];
 const httpsRegex = /^https?:\/\//;
