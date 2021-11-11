@@ -35,10 +35,7 @@ app.post('/api/shorturl', (req, res) => {
     
     dns.lookup(domain, (err) => {
   
-      if(err) {
-        console.log(err);
-        return res.json({ error: 'Invalid url' });
-      }
+      if(err) return res.json({ error: 'Invalid url' });
   
       const newUrlShortened = {
         original_url: url,
