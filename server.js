@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const dns = require('dns');
 const app = express();
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+let currentIdCount = 0;
+const shortenedUrls = [];
+const httpsRegex = /^https?:\/\//;
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -17,6 +21,34 @@ app.get('/', function(req, res) {
 // Your first API endpoint
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
+});
+
+app.post('/api/shorturl', (req, res) => {
+
+  const { url } = req.body;
+
+  if(!httpsRegex.test(url)) {
+    res.json({ error: 'Invalid url' });
+  } else {
+
+    const domain = url.split(httpsRegex)[1].split('/')[0];
+    
+    dns.lookup(domain, (err) => {
+  
+      if(err) {
+        console.log(err);
+        return res.json({ error: 'Invalid url' });
+      }
+  
+      const newUrlShortened = {
+        original_url: url,
+        short_url: ++currentIdCount    
+      };
+    
+      shortenedUrls.push(newUrlShortened);
+      res.json(newUrlShortened);
+    });
+  }
 });
 
 app.listen(port, function() {
